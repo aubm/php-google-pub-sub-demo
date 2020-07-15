@@ -1,0 +1,58 @@
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  annotations:
+    iam.gke.io/gcp-service-account: php-google-pub-sub-demo@sandbox-aba.iam.gserviceaccount.com # replace sandbox-aba with your GCP project id
+  name: php-google-pub-sub-demo
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: php-google-pub-sub-demo
+  name: php-google-pub-sub-demo
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: php-google-pub-sub-demo
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: php-google-pub-sub-demo
+    spec:
+      serviceAccountName: php-google-pub-sub-demo
+      containers:
+        - image: gcr.io/sandbox-aba/php-google-pub-sub-demo # replace sandbox-aba with your GCP project id
+          imagePullPolicy: Always
+          name: php-google-pub-sub-demo
+          env:
+            - name: GCP_PROJECT_ID
+              value: 'sandbox-aba' # replace sandbox-aba with your GCP project id
+            - name: PUB_SUB_SUBSCRIPTION
+              value: 'my-subscription'
+          resources: {}
+status: {}
+---
+apiVersion: autoscaling/v2beta1
+kind: HorizontalPodAutoscaler
+metadata:
+  name: php-google-pub-sub-demo
+spec:
+  minReplicas: 1
+  maxReplicas: 5
+  metrics:
+    - external:
+        metricName: pubsub.googleapis.com|subscription|num_undelivered_messages
+        metricSelector:
+          matchLabels:
+            resource.labels.subscription_id: my-subscription
+        targetAverageValue: "1"
+      type: External
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: php-google-pub-sub-demo

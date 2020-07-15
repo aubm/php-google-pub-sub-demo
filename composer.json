@@ -1,0 +1,13 @@
+{
+    "name": "aubm/php-google-pub-sub-demo",
+    "type": "project",
+    "require": {
+        "google/cloud-pubsub": "^1.25"
+    },
+    "authors": [
+        {
+            "name": "Aurélien Baumann",
+            "email": "aur.baumann@gmail.com"
+        }
+    ]
+}
