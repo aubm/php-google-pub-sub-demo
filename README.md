@@ -92,6 +92,8 @@ kubectl create -f https://raw.githubusercontent.com/GoogleCloudPlatform/k8s-stac
 kubectl annotate serviceaccount custom-metrics-stackdriver-adapter \
   "iam.gke.io/gcp-service-account=custom-metrics-sd-adapter@$GCP_PROJECT_ID.iam.gserviceaccount.com" \
   --namespace custom-metrics
+
+kubectl delete pod --all -n custom-metrics
 ```
 
 Source: https://cloud.google.com/kubernetes-engine/docs/tutorials/autoscaling-metrics#step1

@@ -25,6 +25,7 @@ spec:
         app: php-google-pub-sub-demo
     spec:
       serviceAccountName: php-google-pub-sub-demo
+      terminationGracePeriodSeconds: 1200 # 20 minutes
       containers:
         - image: gcr.io/sandbox-aba/php-google-pub-sub-demo # replace sandbox-aba with your GCP project id
           imagePullPolicy: Always
@@ -32,6 +33,8 @@ spec:
           env:
             - name: GCP_PROJECT_ID
               value: 'sandbox-aba' # replace sandbox-aba with your GCP project id
+            - name: NB_ENTRIES_PER_MESSAGE
+              value: '900' # equivalent to 15 minutes workload per message
             - name: PUB_SUB_SUBSCRIPTION
               value: 'my-subscription'
           resources: {}
